@@ -10,7 +10,7 @@
         "media": [
             {
                 "file": "images/Warning.png",
-                "name": "IMAGE_WARNING",
+                "name": "WARNING_IMAGE",
                 "type": "png"
             },
             {

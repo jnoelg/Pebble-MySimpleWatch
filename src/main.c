@@ -4,6 +4,11 @@ static Window *s_main_window;
 static TextLayer *s_time_layer_hh;
 static TextLayer *s_time_layer_mm;
 static TextLayer *s_time_layer_dte;
+
+static BitmapLayer *s_warning_img_layer;
+static GBitmap *s_warning_bitmap;
+static bool lastBtStateConnected = false;
+
 static Layer *s_canvas_layer;
 
 static int chargeState = -1;
@@ -89,6 +94,14 @@ static void main_window_load(Window *window) {
   
   // Add it as a child layer to the Window's root layer
   layer_add_child(window_layer, s_canvas_layer);
+  
+  // Create a Bitmap Layer for BT Signal warning
+  s_warning_img_layer = bitmap_layer_create(GRect(0, 96, 144, 64));
+  s_warning_bitmap = gbitmap_create_with_resource(RESOURCE_ID_WARNING_IMAGE);
+  bitmap_layer_set_bitmap(s_warning_img_layer, s_warning_bitmap);
+  
+  // Add it as a child layer to the Window's root layer
+  layer_add_child(window_layer, bitmap_layer_get_layer(s_warning_img_layer));
 }
 
 static void main_window_unload(Window *window) {
@@ -102,8 +115,12 @@ static void main_window_unload(Window *window) {
   fonts_unload_custom_font(s_time_font_mm);
   fonts_unload_custom_font(s_time_font_dte);
   
-  // Destroy Layer
+  // Destroy Layers
   layer_destroy(s_canvas_layer);
+  
+  // Destroy BitmapLayers and content
+  gbitmap_destroy(s_warning_bitmap);
+  bitmap_layer_destroy(s_warning_img_layer);
 }
 
 static void update_time() {
@@ -147,6 +164,23 @@ static void update_time() {
   text_layer_set_text(s_time_layer_hh, buffer_hh);
   text_layer_set_text(s_time_layer_mm, buffer_mm);
   text_layer_set_text(s_time_layer_dte, buffer_dte);
+  
+  if (bluetooth_connection_service_peek()) {
+    // phone is connected
+    layer_set_hidden(bitmap_layer_get_layer(s_warning_img_layer), true); 
+    layer_set_hidden(text_layer_get_layer(s_time_layer_dte), false); 
+    lastBtStateConnected = true;
+  } else {
+    // phone is not connected
+    layer_set_hidden(text_layer_get_layer(s_time_layer_dte), true); 
+    layer_set_hidden(bitmap_layer_get_layer(s_warning_img_layer), false); 
+    
+    // if we just lost the connection, vibe twice
+    if (lastBtStateConnected) {
+      lastBtStateConnected = false;
+      vibes_double_pulse();
+    }
+  }
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
