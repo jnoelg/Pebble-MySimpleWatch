@@ -1,0 +1,41 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "contact@jn-goumain.ca",
+    "longName": "MySimpleWatch",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "fonts/Aero Matics Display Light.ttf",
+                "name": "AERO_LIGHT_28",
+                "type": "font"
+            },
+            {
+                "characterRegex": "[0-9: ]",
+                "file": "fonts/Aero Matics Display Light.ttf",
+                "name": "AERO_LIGHT_64",
+                "type": "font"
+            },
+            {
+                "characterRegex": "[0-9: ]",
+                "file": "fonts/Aero Matics Display Regular.ttf",
+                "name": "AERO_64",
+                "type": "font"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "MySimpleWatch",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "0333a278-70f8-4bf1-b811-d64f4dfb6bd3",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
+}
