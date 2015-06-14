@@ -9,20 +9,30 @@
     "resources": {
         "media": [
             {
+                "file": "images/Warning.png",
+                "name": "IMAGE_WARNING",
+                "type": "png"
+            },
+            {
+                "characterRegex": "[0-9: ]",
+                "file": "fonts/Aero Matics Display Light.ttf",
+                "name": "AERO_LIGHT_62",
+                "type": "font"
+            },
+            {
                 "file": "fonts/Aero Matics Display Light.ttf",
                 "name": "AERO_LIGHT_28",
                 "type": "font"
             },
             {
-                "characterRegex": "[0-9: ]",
-                "file": "fonts/Aero Matics Display Light.ttf",
-                "name": "AERO_LIGHT_64",
+                "file": "fonts/Aero Matics Display Regular.ttf",
+                "name": "AERO_28",
                 "type": "font"
             },
             {
                 "characterRegex": "[0-9: ]",
                 "file": "fonts/Aero Matics Display Regular.ttf",
-                "name": "AERO_64",
+                "name": "AERO_62",
                 "type": "font"
             }
         ]
