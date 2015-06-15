@@ -9,6 +9,12 @@
     "resources": {
         "media": [
             {
+                "file": "images/MySimpleWatchMenu.png",
+                "menuIcon": true,
+                "name": "MENU",
+                "type": "png"
+            },
+            {
                 "file": "images/Warning.png",
                 "name": "WARNING_IMAGE",
                 "type": "png"
