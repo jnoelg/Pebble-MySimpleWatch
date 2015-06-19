@@ -9,14 +9,119 @@
     "resources": {
         "media": [
             {
-                "file": "images/MySimpleWatchMenu.png",
-                "menuIcon": true,
-                "name": "MENU",
+                "file": "images/blank.png",
+                "name": "BLANK",
                 "type": "png"
             },
             {
-                "file": "images/Warning.png",
+                "file": "images/warn.png",
                 "name": "WARNING_IMAGE",
+                "type": "png"
+            },
+            {
+                "file": "images/9B.png",
+                "name": "NINE_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/9.png",
+                "name": "NINE",
+                "type": "png"
+            },
+            {
+                "file": "images/8B.png",
+                "name": "EIGHT_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/8.png",
+                "name": "EIGHT",
+                "type": "png"
+            },
+            {
+                "file": "images/7B.png",
+                "name": "SEVEN_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/7.png",
+                "name": "SEVEN",
+                "type": "png"
+            },
+            {
+                "file": "images/6B.png",
+                "name": "SIX_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/6.png",
+                "name": "SIX",
+                "type": "png"
+            },
+            {
+                "file": "images/5B.png",
+                "name": "FIVE_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/5.png",
+                "name": "FIVE",
+                "type": "png"
+            },
+            {
+                "file": "images/4B.png",
+                "name": "FOUR_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/4.png",
+                "name": "FOUR",
+                "type": "png"
+            },
+            {
+                "file": "images/3B.png",
+                "name": "THREE_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/3.png",
+                "name": "THREE",
+                "type": "png"
+            },
+            {
+                "file": "images/2B.png",
+                "name": "TWO_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/2.png",
+                "name": "TWO",
+                "type": "png"
+            },
+            {
+                "file": "images/1B.png",
+                "name": "ONE_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/1.png",
+                "name": "ONE",
+                "type": "png"
+            },
+            {
+                "file": "images/0B.png",
+                "name": "ZERO_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/0.png",
+                "name": "ZERO",
+                "type": "png"
+            },
+            {
+                "file": "images/MySimpleWatchMenu.png",
+                "menuIcon": true,
+                "name": "MENU",
                 "type": "png"
             },
             {
