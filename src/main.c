@@ -46,7 +46,7 @@ const int IMAGE_MIN_RESOURCE_IDS[10] = {
   RESOURCE_ID_NINE
 }; 
 
-// safe getters
+// safe image getters
 static int get_image_hour(int idx) {
   if ((idx >= 0) && (idx <= 9)) 
     return IMAGE_HOUR_RESOURCE_IDS[idx];
@@ -153,42 +153,35 @@ static void load_time_images() {
   Layer *window_layer = window_get_root_layer(s_main_window);
   
   // center align
-  int total_w = get_total_width();
+  int total_w = get_total_width() + 4; // max is 0000 -> 4*35 + 4 = 144
   int current_x = (144 - total_w) / 2;
   
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "total_w = %d", total_w);
   
   // Create and add the H1 Bitmap Layer
-  //APP_LOG(APP_LOG_LEVEL_DEBUG, "current_x = %d, h1 = %d", current_x, h1);
   s_h1_img_layer = bitmap_layer_create(GRect(current_x, 27, get_width(h1), 43));
-  //layer_set_bounds(bitmap_layer_get_layer(s_h1_img_layer), GRect(current_x, 27, get_width(h1), 43));
   s_h1_bitmap = gbitmap_create_with_resource(get_image_hour(h1));
   bitmap_layer_set_bitmap(s_h1_img_layer, s_h1_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_h1_img_layer));
   
   // Create and add the H2 Bitmap Layer
   current_x += get_width(h1);
-  //APP_LOG(APP_LOG_LEVEL_DEBUG, "current_x = %d, h2 = %d", current_x, h2);
   s_h2_img_layer = bitmap_layer_create(GRect(current_x, 27, get_width(h2), 43));
-  //layer_set_bounds(bitmap_layer_get_layer(s_h2_img_layer), GRect(current_x, 27, get_width(h2), 43));
   s_h2_bitmap = gbitmap_create_with_resource(get_image_hour(h2));
   bitmap_layer_set_bitmap(s_h2_img_layer, s_h2_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_h2_img_layer));
   
   // Create and add the M1 Bitmap Layer
   current_x += get_width(h2);
-  //APP_LOG(APP_LOG_LEVEL_DEBUG, "current_x = %d, m1 = %d", current_x, m1);
+  current_x += 4; // separation between hours and minutes
   s_m1_img_layer = bitmap_layer_create(GRect(current_x, 28, get_width(m1), 42));
-  //layer_set_bounds(bitmap_layer_get_layer(s_m1_img_layer), GRect(current_x, 28, get_width(m1), 42));
   s_m1_bitmap = gbitmap_create_with_resource(get_image_min(m1));
   bitmap_layer_set_bitmap(s_m1_img_layer, s_m1_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_m1_img_layer));
   
   // Create and add the M2 Bitmap Layer
   current_x += get_width(m1);
-  //APP_LOG(APP_LOG_LEVEL_DEBUG, "current_x = %d, m2 = %d", current_x, m2);
   s_m2_img_layer = bitmap_layer_create(GRect(current_x, 28, get_width(m2), 42));
-  //layer_set_bounds(bitmap_layer_get_layer(s_m2_img_layer), GRect(current_x, 28, get_width(m2), 42));
   s_m2_bitmap = gbitmap_create_with_resource(get_image_min(m2));
   bitmap_layer_set_bitmap(s_m2_img_layer, s_m2_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_m2_img_layer));
