@@ -9,6 +9,12 @@
     "resources": {
         "media": [
             {
+                "file": "images/MySimpleWatchMenuV2.png",
+                "menuIcon": true,
+                "name": "MENU",
+                "type": "png"
+            },
+            {
                 "file": "images/8B.png",
                 "name": "EIGHT_BOLD",
                 "type": "png"
@@ -119,12 +125,6 @@
                 "type": "png"
             },
             {
-                "file": "images/MySimpleWatchMenu.png",
-                "menuIcon": true,
-                "name": "MENU",
-                "type": "png"
-            },
-            {
                 "characterRegex": "[0-9: ]",
                 "file": "fonts/Aero Matics Display Light.ttf",
                 "name": "AERO_LIGHT_62",
@@ -155,7 +155,7 @@
         "basalt"
     ],
     "uuid": "0333a278-70f8-4bf1-b811-d64f4dfb6bd3",
-    "versionLabel": "1.0",
+    "versionLabel": "2.0",
     "watchapp": {
         "watchface": true
     }
