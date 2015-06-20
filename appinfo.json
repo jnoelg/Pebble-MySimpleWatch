@@ -9,6 +9,11 @@
     "resources": {
         "media": [
             {
+                "file": "images/8B.png",
+                "name": "EIGHT_BOLD",
+                "type": "png"
+            },
+            {
                 "file": "images/8.png",
                 "name": "EIGHT",
                 "type": "png"
@@ -31,11 +36,6 @@
             {
                 "file": "images/9.png",
                 "name": "NINE",
-                "type": "png"
-            },
-            {
-                "file": "images/8B.png",
-                "name": "EIGHT_BOLD",
                 "type": "png"
             },
             {
