@@ -9,6 +9,11 @@
     "resources": {
         "media": [
             {
+                "file": "images/warn28.png",
+                "name": "WARN28",
+                "type": "png"
+            },
+            {
                 "file": "images/MySimpleWatchMenuV2.png",
                 "menuIcon": true,
                 "name": "MENU",
@@ -27,11 +32,6 @@
             {
                 "file": "images/blank.png",
                 "name": "BLANK",
-                "type": "png"
-            },
-            {
-                "file": "images/warn.png",
-                "name": "WARNING_IMAGE",
                 "type": "png"
             },
             {
@@ -155,7 +155,7 @@
         "basalt"
     ],
     "uuid": "0333a278-70f8-4bf1-b811-d64f4dfb6bd3",
-    "versionLabel": "2.0",
+    "versionLabel": "2.1",
     "watchapp": {
         "watchface": true
     }

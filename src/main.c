@@ -213,8 +213,8 @@ static void main_window_load(Window *window) {
   layer_add_child(window_layer, s_canvas_layer);
   
   // Create and add a Bitmap Layer for BT Signal warning
-  s_warning_img_layer = bitmap_layer_create(GRect(0, 96, 144, 64));
-  s_warning_bitmap = gbitmap_create_with_resource(RESOURCE_ID_WARNING_IMAGE);
+  s_warning_img_layer = bitmap_layer_create(GRect(0, 132, 144, 32));
+  s_warning_bitmap = gbitmap_create_with_resource(RESOURCE_ID_WARN28);
   bitmap_layer_set_bitmap(s_warning_img_layer, s_warning_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_warning_img_layer));
 }
@@ -292,11 +292,11 @@ static void update_display() {
   if (bluetooth_connection_service_peek()) {
     // phone is connected
     layer_set_hidden(bitmap_layer_get_layer(s_warning_img_layer), true); 
-    layer_set_hidden(text_layer_get_layer(s_time_layer_dte), false); 
+    //layer_set_hidden(text_layer_get_layer(s_time_layer_dte), false); 
     lastBtStateConnected = true;
   } else {
     // phone is not connected
-    layer_set_hidden(text_layer_get_layer(s_time_layer_dte), true); 
+    //layer_set_hidden(text_layer_get_layer(s_time_layer_dte), true); 
     layer_set_hidden(bitmap_layer_get_layer(s_warning_img_layer), false); 
     
     // if we just lost the connection, vibe twice
@@ -332,7 +332,8 @@ static void init() {
   update_display();
   
   // Register with TickTimerService
-  tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+  //tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+  tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
 }
 
 static void deinit() {
