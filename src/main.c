@@ -1,5 +1,5 @@
 #include <pebble.h>
-
+  
 static Window *s_main_window;
 
 // graphical elements
@@ -31,15 +31,22 @@ static int h2 = 0;
 static int m1 = 0;
 static int m2 = 0;
 
+// config keys and values 
+#define CONFIG_KEY_HH_IN_BOLD 0
+#define CONFIG_KEY_MM_IN_BOLD 1
+
+static bool hh_in_bold = true;
+static bool mm_in_bold = false;
+
 // images collections
-const int IMAGE_HOUR_RESOURCE_IDS[10] = {
+const int IMAGE_BOLD_RESOURCE_IDS[10] = {
   RESOURCE_ID_ZERO_BOLD, RESOURCE_ID_ONE_BOLD, RESOURCE_ID_TWO_BOLD,
   RESOURCE_ID_THREE_BOLD, RESOURCE_ID_FOUR_BOLD, RESOURCE_ID_FIVE_BOLD,
   RESOURCE_ID_SIX_BOLD, RESOURCE_ID_SEVEN_BOLD, RESOURCE_ID_EIGHT_BOLD,
   RESOURCE_ID_NINE_BOLD
 }; 
 
-const int IMAGE_MIN_RESOURCE_IDS[10] = {
+const int IMAGE_REGULAR_RESOURCE_IDS[10] = {
   RESOURCE_ID_ZERO, RESOURCE_ID_ONE, RESOURCE_ID_TWO,
   RESOURCE_ID_THREE, RESOURCE_ID_FOUR, RESOURCE_ID_FIVE,
   RESOURCE_ID_SIX, RESOURCE_ID_SEVEN, RESOURCE_ID_EIGHT,
@@ -49,14 +56,14 @@ const int IMAGE_MIN_RESOURCE_IDS[10] = {
 // safe image getters
 static int get_image_hour(int idx) {
   if ((idx >= 0) && (idx <= 9)) 
-    return IMAGE_HOUR_RESOURCE_IDS[idx];
+    return hh_in_bold ? IMAGE_BOLD_RESOURCE_IDS[idx] : IMAGE_REGULAR_RESOURCE_IDS[idx];
   else
     return RESOURCE_ID_BLANK;
 }
 
 static int get_image_min(int idx) {
   if ((idx >= 0) && (idx <= 9)) 
-    return IMAGE_MIN_RESOURCE_IDS[idx];
+    return mm_in_bold ? IMAGE_BOLD_RESOURCE_IDS[idx] : IMAGE_REGULAR_RESOURCE_IDS[idx];
   else
     return RESOURCE_ID_BLANK;
 }
@@ -311,7 +318,89 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   update_display();
 }
 
+void read_configuration(void)
+{
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "read_configuration");
+  
+  if (persist_exists(CONFIG_KEY_HH_IN_BOLD))
+  {
+    hh_in_bold = persist_read_bool(CONFIG_KEY_HH_IN_BOLD);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "hh_in_bold = %d", hh_in_bold);
+  }
+  
+  if (persist_exists(CONFIG_KEY_MM_IN_BOLD))
+  {
+    mm_in_bold = persist_read_bool(CONFIG_KEY_MM_IN_BOLD);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "mm_in_bold = %d", mm_in_bold);
+  }
+}
+
+void in_received_handler(DictionaryIterator *received, void *context)
+{
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "in_received_handler");
+  
+  Tuple *hh_in_bold_tuple = dict_find(received, CONFIG_KEY_HH_IN_BOLD);
+  if (hh_in_bold_tuple)
+  {
+    app_log(APP_LOG_LEVEL_DEBUG,
+            __FILE__,
+            __LINE__,
+            "hh_in_bold=%s",
+            hh_in_bold_tuple->value->cstring);
+
+    if (strcmp(hh_in_bold_tuple->value->cstring, "0") == 0)
+    {
+      persist_write_bool(CONFIG_KEY_HH_IN_BOLD, false);
+    }
+    else
+    {
+      persist_write_bool(CONFIG_KEY_HH_IN_BOLD, true);
+    }
+  }
+
+  Tuple *mm_in_bold_tuple = dict_find(received, CONFIG_KEY_MM_IN_BOLD);
+  if (mm_in_bold_tuple)
+  {
+    app_log(APP_LOG_LEVEL_DEBUG,
+            __FILE__,
+            __LINE__,
+            "mm_in_bold=%s",
+            mm_in_bold_tuple->value->cstring);
+
+    if (strcmp(mm_in_bold_tuple->value->cstring, "1") == 0)
+    {
+      persist_write_bool(CONFIG_KEY_MM_IN_BOLD, true);
+    }
+    else
+    {
+      persist_write_bool(CONFIG_KEY_MM_IN_BOLD, false);
+    }
+  }
+
+  read_configuration();
+  update_display();
+}
+
+
+void in_dropped_handler(AppMessageResult reason, void *ctx)
+{
+    app_log(APP_LOG_LEVEL_WARNING,
+            __FILE__,
+            __LINE__,
+            "Message dropped, reason code %d",
+            reason);
+}
+
+
 static void init() {
+  // read configuration 
+  read_configuration();
+  
+  // register configurable messages
+  app_message_register_inbox_received(in_received_handler);
+  app_message_register_inbox_dropped(in_dropped_handler);
+  app_message_open(64, 64);
+  
   // Reset locale to the one selected by the user (en_US by default)
   setlocale(LC_TIME, ""); 
   
@@ -337,6 +426,9 @@ static void init() {
 }
 
 static void deinit() {
+  // unregister messages handling
+  app_message_deregister_callbacks();
+  
   // Untergister services
   tick_timer_service_unsubscribe();
   

@@ -1,5 +1,8 @@
 {
-    "appKeys": {},
+    "appKeys": {
+        "CONFIG_KEY_HH_IN_BOLD": 0,
+        "CONFIG_KEY_MM_IN_BOLD": 1
+    },
     "capabilities": [
         "configurable"
     ],
@@ -154,7 +157,7 @@
         "aplite",
         "basalt"
     ],
-    "uuid": "0333a278-70f8-4bf1-b811-d64f4dfb6bd3",
+    "uuid": "6a3a23f5-2c5d-4d85-94b0-59edac9202ba",
     "versionLabel": "3.0",
     "watchapp": {
         "watchface": true
