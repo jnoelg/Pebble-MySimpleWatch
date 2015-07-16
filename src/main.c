@@ -34,9 +34,16 @@ static int m2 = 0;
 // config keys and values 
 #define CONFIG_KEY_HH_IN_BOLD 0
 #define CONFIG_KEY_MM_IN_BOLD 1
+#define CONFIG_KEY_LOCALE 2
+  
+#define locale_en 0x0
+#define locale_fr 0x1
+#define locale_de 0x2
+#define locale_es 0x3
 
 static bool hh_in_bold = true;
 static bool mm_in_bold = false;
+static int locale = locale_en;
 
 // images collections
 const int IMAGE_BOLD_RESOURCE_IDS[10] = {
@@ -148,7 +155,7 @@ static void unload_time_images() {
   bitmap_layer_destroy(s_m1_img_layer);
   gbitmap_destroy(s_m1_bitmap);
   
-  // h1
+  // m2
   layer_remove_from_parent(bitmap_layer_get_layer(s_m2_img_layer));
   bitmap_layer_destroy(s_m2_img_layer);
   gbitmap_destroy(s_m2_bitmap);
@@ -333,6 +340,12 @@ void read_configuration(void)
     mm_in_bold = persist_read_bool(CONFIG_KEY_MM_IN_BOLD);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "mm_in_bold = %d", mm_in_bold);
   }
+  
+  if (persist_exists(CONFIG_KEY_LOCALE))
+  {
+    locale = persist_read_int(CONFIG_KEY_LOCALE);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "locale (0=en, 1=fr, 2=de, 3=es) = %d", locale);
+  }
 }
 
 void in_received_handler(DictionaryIterator *received, void *context)
@@ -376,6 +389,33 @@ void in_received_handler(DictionaryIterator *received, void *context)
       persist_write_bool(CONFIG_KEY_MM_IN_BOLD, false);
     }
   }
+  
+  Tuple *locale_tuple = dict_find(received, CONFIG_KEY_LOCALE);
+  if (locale_tuple)
+  {
+    app_log(APP_LOG_LEVEL_DEBUG,
+            __FILE__,
+            __LINE__,
+            "locale=%s",
+            locale_tuple->value->cstring);
+
+    if (strcmp(locale_tuple->value->cstring, "fr") == 0)
+    {
+      persist_write_int(CONFIG_KEY_LOCALE, locale_fr);
+    }
+    else if (strcmp(locale_tuple->value->cstring, "de") == 0)
+    {
+      persist_write_int(CONFIG_KEY_LOCALE, locale_de);
+    }
+    else if (strcmp(locale_tuple->value->cstring, "es") == 0)
+    {
+      persist_write_int(CONFIG_KEY_LOCALE, locale_es);
+    }
+    else
+    {
+      persist_write_int(CONFIG_KEY_LOCALE, locale_en);
+    }
+  }
 
   read_configuration();
   update_display();
@@ -393,6 +433,21 @@ void in_dropped_handler(AppMessageResult reason, void *ctx)
 
 
 static void init() {
+  // default locale
+  char *sys_locale = setlocale(LC_ALL, "");
+  
+  if (strcmp("en_US", sys_locale) == 0) {
+    locale = locale_en;
+  } else if (strcmp("fr_FR", sys_locale) == 0) {
+    locale = locale_fr;
+  } else if (strcmp("de_DE", sys_locale) == 0) {
+    locale = locale_de;
+  } else if (strcmp("es_ES", sys_locale) == 0) {
+    locale = locale_es;
+  }
+  
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "default locale = %s -> %d", sys_locale, locale);
+  
   // read configuration 
   read_configuration();
   
@@ -400,9 +455,6 @@ static void init() {
   app_message_register_inbox_received(in_received_handler);
   app_message_register_inbox_dropped(in_dropped_handler);
   app_message_open(64, 64);
-  
-  // Reset locale to the one selected by the user (en_US by default)
-  setlocale(LC_TIME, ""); 
   
   // Create main Window element
   s_main_window = window_create();
