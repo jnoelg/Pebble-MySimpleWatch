@@ -34,7 +34,7 @@ Pebble.addEventListener("showConfiguration", function() {
 Pebble.addEventListener("webviewclosed", function(e) {
   console.log("configuration closed");
   // webview closed
-  //Using primitive JSON validity and non-empty check
+  // using primitive JSON validity and non-empty check
   if (e.response.charAt(0) == "{" && e.response.slice(-1) == "}" && e.response.length > 5) {
     var options = JSON.parse(decodeURIComponent(e.response));
     console.log("storing options: " + JSON.stringify(options));
@@ -46,16 +46,20 @@ Pebble.addEventListener("webviewclosed", function(e) {
     var mm_in_bold = options["mm-in-bold"];
     console.log("mm-in-bold: " + mm_in_bold);
     
+    var locale = options.locale;
+    console.log("locale: " + locale);
+    
     Pebble.sendAppMessage(
       {
         "CONFIG_KEY_HH_IN_BOLD":hh_in_bold,
-        "CONFIG_KEY_MM_IN_BOLD":mm_in_bold
+        "CONFIG_KEY_MM_IN_BOLD":mm_in_bold, 
+        "CONFIG_KEY_LOCALE":locale
       }, 
       appMessageAck, 
       appMessageNack
     );
     
   } else {
-    console.log("Cancelled");
+    console.log("cancelled");
   }
 });

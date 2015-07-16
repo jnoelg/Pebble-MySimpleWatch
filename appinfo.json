@@ -1,7 +1,7 @@
 {
     "appKeys": {
         "CONFIG_KEY_HH_IN_BOLD": 0,
-        "CONFIG_KEY_LOCALE": 3,
+        "CONFIG_KEY_LOCALE": 2,
         "CONFIG_KEY_MM_IN_BOLD": 1
     },
     "capabilities": [
