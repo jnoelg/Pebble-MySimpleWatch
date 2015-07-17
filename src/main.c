@@ -45,6 +45,24 @@ static bool hh_in_bold = true;
 static bool mm_in_bold = false;
 static int locale = locale_en;
 
+// days (en, fr, de, es)
+const char *DAYS[4][7] = { 
+  {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"},
+  {"Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"},   
+  {"Son", "Mon", "Die", "Mit", "Don", "Fre", "Sam"},
+  {"Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sab"}
+};
+
+// months (en, fr, de, es)
+const char *MONTHS[4][12] = { 
+  {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
+  {"Jan", "Fév", "Mar", "Avr", "Mai", "Jui", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"},   
+  {"Jan", "Feb", "Mrz", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"},
+  {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"}
+};
+
+// in Spanish, the days of the week and the months of the year are not capitalized when spelled out or abbreviated
+
 // images collections
 const int IMAGE_BOLD_RESOURCE_IDS[10] = {
   RESOURCE_ID_ZERO_BOLD, RESOURCE_ID_ONE_BOLD, RESOURCE_ID_TWO_BOLD,
@@ -294,7 +312,16 @@ static void update_display() {
   m2 = ascii_digit_to_int(buffer_mm[1]);
   
   // Write the current date into the buffer
-  strftime(buffer_dte, sizeof("ddd 00 mmm"), "%a %d %b", tick_time);
+  if (locale != locale_en) {
+    // Ddd 00 Mmm
+    //strftime(buffer_dte, sizeof("ddd 00 mmm"), "%a %d %b", tick_time);
+    snprintf(buffer_dte, sizeof("ddd 00 mmm"), "%s %d %s", DAYS[locale][tick_time->tm_wday], tick_time->tm_mday, MONTHS[locale][tick_time->tm_mon]);
+  }
+  else {
+    // Ddd Mmm 00
+    //strftime(buffer_dte, sizeof("ddd mmm 00"), "%a %b %d", tick_time);
+    snprintf(buffer_dte, sizeof("ddd mmm 00"), "%s %s %d", DAYS[0][tick_time->tm_wday], MONTHS[0][tick_time->tm_mon], tick_time->tm_mday);
+  }
   
   // undload and relaod time images
   unload_time_images();
@@ -433,24 +460,24 @@ void in_dropped_handler(AppMessageResult reason, void *ctx)
 
 
 static void init() {
-  // default locale
+  // default / system locale
   char *sys_locale = setlocale(LC_ALL, "");
   
-  if (strcmp("en_US", sys_locale) == 0) {
-    locale = locale_en;
-  } else if (strcmp("fr_FR", sys_locale) == 0) {
+  if (strcmp("fr_FR", sys_locale) == 0) {
     locale = locale_fr;
   } else if (strcmp("de_DE", sys_locale) == 0) {
     locale = locale_de;
   } else if (strcmp("es_ES", sys_locale) == 0) {
     locale = locale_es;
+  } else {
+    locale = locale_en; // default
   }
   
   APP_LOG(APP_LOG_LEVEL_DEBUG, "default locale = %s -> %d", sys_locale, locale);
   
   // read configuration 
   read_configuration();
-  
+    
   // register configurable messages
   app_message_register_inbox_received(in_received_handler);
   app_message_register_inbox_dropped(in_dropped_handler);
