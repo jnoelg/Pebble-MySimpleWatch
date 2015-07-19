@@ -20,11 +20,11 @@ Pebble.addEventListener("showConfiguration", function() {
     console.log("read options: " + JSON.stringify(options));
   }
   else {
-    options = JSON.parse("{\"hh-in-bold\":\"1\",\"mm-in-bold\":\"0\"}");
+    options = JSON.parse("{\"hh-in-bold\":\"1\"}");
     console.log("defaults options: " + JSON.stringify(options));
   }
   
-  var uri = 'http://jnoelg.github.io/MySimpleWatch/configurable.html';
+  var uri = 'http://jnoelg.github.io/MySimpleWatch/configurable-3.1.html';
   uri = uri+ '?' + encodeURIComponent(JSON.stringify(options));
   
   console.log("showing configuration");

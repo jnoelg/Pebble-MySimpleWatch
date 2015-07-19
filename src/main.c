@@ -371,7 +371,23 @@ void read_configuration(void)
   if (persist_exists(CONFIG_KEY_LOCALE))
   {
     locale = persist_read_int(CONFIG_KEY_LOCALE);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "locale (0=en, 1=fr, 2=de, 3=es) = %d", locale);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "using config locale (0=en, 1=fr, 2=de, 3=es) = %d", locale);
+  }
+  else {
+    // use default / system locale
+    char *sys_locale = setlocale(LC_ALL, "");
+    
+    if (strcmp(sys_locale, "fr_FR") == 0) {
+      locale = locale_fr;
+    } else if (strcmp(sys_locale, "de_DE") == 0) {
+      locale = locale_de;
+    } else if (strcmp(sys_locale, "es_ES") == 0) {
+      locale = locale_es;
+    } else {
+      locale = locale_en; // default
+    }
+    
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "using default locale = %s -> %d", sys_locale, locale);
   }
 }
 
@@ -426,7 +442,14 @@ void in_received_handler(DictionaryIterator *received, void *context)
             "locale=%s",
             locale_tuple->value->cstring);
 
-    if (strcmp(locale_tuple->value->cstring, "fr") == 0)
+    if (strcmp(locale_tuple->value->cstring, "default") == 0)
+    {
+      if (persist_exists(CONFIG_KEY_LOCALE)) 
+      {
+        persist_delete(CONFIG_KEY_LOCALE);
+      }
+    }
+    else if (strcmp(locale_tuple->value->cstring, "fr") == 0)
     {
       persist_write_int(CONFIG_KEY_LOCALE, locale_fr);
     }
@@ -460,21 +483,6 @@ void in_dropped_handler(AppMessageResult reason, void *ctx)
 
 
 static void init() {
-  // default / system locale
-  char *sys_locale = setlocale(LC_ALL, "");
-  
-  if (strcmp("fr_FR", sys_locale) == 0) {
-    locale = locale_fr;
-  } else if (strcmp("de_DE", sys_locale) == 0) {
-    locale = locale_de;
-  } else if (strcmp("es_ES", sys_locale) == 0) {
-    locale = locale_es;
-  } else {
-    locale = locale_en; // default
-  }
-  
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "default locale = %s -> %d", sys_locale, locale);
-  
   // read configuration 
   read_configuration();
     
