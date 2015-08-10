@@ -13,25 +13,8 @@
     "resources": {
         "media": [
             {
-                "characterRegex": "[0-9: ]",
-                "file": "fonts/Aero Matics Display Regular.ttf",
-                "name": "AERO_62",
-                "type": "font"
-            },
-            {
                 "file": "fonts/Aero Matics Display Regular.ttf",
                 "name": "AERO_28",
-                "type": "font"
-            },
-            {
-                "file": "fonts/Aero Matics Display Light.ttf",
-                "name": "AERO_LIGHT_28",
-                "type": "font"
-            },
-            {
-                "characterRegex": "[0-9: ]",
-                "file": "fonts/Aero Matics Display Light.ttf",
-                "name": "AERO_LIGHT_62",
                 "type": "font"
             },
             {
@@ -159,7 +142,7 @@
         "basalt"
     ],
     "uuid": "0333a278-70f8-4bf1-b811-d64f4dfb6bd3",
-    "versionLabel": "3.1",
+    "versionLabel": "3.2",
     "watchapp": {
         "watchface": true
     }
