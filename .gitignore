@@ -1,4 +1,4 @@
-# ignore build
+# ignore build folder
 /build/
-# ignore .lock* file
+# ignore .lock* files
 .lock*
