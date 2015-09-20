@@ -24,7 +24,7 @@ Pebble.addEventListener("showConfiguration", function() {
     console.log("defaults options: " + JSON.stringify(options));
   }
   
-  var uri = 'http://jnoelg.github.io/MySimpleWatch/configurable-3.1.html';
+  var uri = 'http://jnoelg.github.io/MySimpleWatch/configurable-3.3.html';
   uri = uri+ '?' + encodeURIComponent(JSON.stringify(options));
   
   console.log("showing configuration");
@@ -49,11 +49,15 @@ Pebble.addEventListener("webviewclosed", function(e) {
     var locale = options.locale;
     console.log("locale: " + locale);
     
+    var hh_strip_zero = options["hh-strip-zero"];
+    console.log("hh-strip-zero: " + hh_strip_zero);
+    
     Pebble.sendAppMessage(
       {
         "CONFIG_KEY_HH_IN_BOLD":hh_in_bold,
         "CONFIG_KEY_MM_IN_BOLD":mm_in_bold, 
-        "CONFIG_KEY_LOCALE":locale
+        "CONFIG_KEY_LOCALE":locale,
+        "CONFIG_KEY_HH_STRIP_ZERO":hh_strip_zero
       }, 
       appMessageAck, 
       appMessageNack

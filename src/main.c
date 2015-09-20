@@ -35,6 +35,7 @@ static int m2 = 0;
 #define CONFIG_KEY_HH_IN_BOLD 0
 #define CONFIG_KEY_MM_IN_BOLD 1
 #define CONFIG_KEY_LOCALE 2
+#define CONFIG_KEY_HH_STRIP_ZERO 3
   
 #define locale_en 0x0
 #define locale_fr 0x1
@@ -44,6 +45,7 @@ static int m2 = 0;
 static bool hh_in_bold = true;
 static bool mm_in_bold = false;
 static int locale = locale_en;
+static bool hh_strip_zero = false;
 
 // days (en, fr, de, es)
 const char *DAYS[4][7] = { 
@@ -304,6 +306,9 @@ static void update_display() {
   
   h1 = ascii_digit_to_int(buffer_hh[0]);
   h2 = ascii_digit_to_int(buffer_hh[1]);
+  
+  // hide leading zero if required
+  if (h1 == 0 && hh_strip_zero) h1 = -1;
 
   // Write the current minuts into the buffer
   strftime(buffer_mm, sizeof("00"), "%M", tick_time);
@@ -389,6 +394,12 @@ void read_configuration(void)
     
     APP_LOG(APP_LOG_LEVEL_DEBUG, "using default locale = %s -> %d", sys_locale, locale);
   }
+  
+  if (persist_exists(CONFIG_KEY_HH_STRIP_ZERO))
+  {
+    hh_strip_zero = persist_read_bool(CONFIG_KEY_HH_STRIP_ZERO);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "hh_strip_zero = %d", hh_strip_zero);
+  }
 }
 
 void in_received_handler(DictionaryIterator *received, void *context)
@@ -464,6 +475,25 @@ void in_received_handler(DictionaryIterator *received, void *context)
     else
     {
       persist_write_int(CONFIG_KEY_LOCALE, locale_en);
+    }
+  }
+  
+  Tuple *hh_strip_zero_tuple = dict_find(received, CONFIG_KEY_HH_STRIP_ZERO);
+  if (hh_strip_zero_tuple)
+  {
+    app_log(APP_LOG_LEVEL_DEBUG,
+            __FILE__,
+            __LINE__,
+            "hh_strip_zero=%s",
+            hh_strip_zero_tuple->value->cstring);
+
+    if (strcmp(hh_strip_zero_tuple->value->cstring, "0") == 0)
+    {
+      persist_write_bool(CONFIG_KEY_HH_STRIP_ZERO, false);
+    }
+    else
+    {
+      persist_write_bool(CONFIG_KEY_HH_STRIP_ZERO, true);
     }
   }
 
