@@ -41,16 +41,11 @@ static int m2 = 0;
 #define locale_fr 0x1
 #define locale_de 0x2
 #define locale_es 0x3
-  
-#define sep_mode_none 0x0
-#define sep_mode_dot 0x1
-#define sep_mode_colon 0x2
 
 static bool hh_in_bold = true;
 static bool mm_in_bold = false;
 static int locale = locale_en;
 static bool hh_strip_zero = false;
-static int sep_mode = sep_mode_dot;
 
 // days (en, fr, de, es)
 const char *DAYS[4][7] = { 
@@ -160,17 +155,6 @@ static void layer_update_callback(Layer *me, GContext *ctx) {
   graphics_draw_line(ctx, GPoint(24,89), GPoint(120, 89));
   graphics_draw_line(ctx, GPoint(24,90), GPoint(120, 90));
   graphics_draw_line(ctx, GPoint(24,91), GPoint(120, 91));
-  
-  if (sep_mode == sep_mode_dot) {
-    graphics_context_set_stroke_color(ctx, GColorWhite);
-    graphics_draw_line(ctx, GPoint(71,38), GPoint(73, 38));
-    graphics_draw_line(ctx, GPoint(71,39), GPoint(73, 39));
-    graphics_draw_line(ctx, GPoint(71,40), GPoint(73, 40));
-    
-    graphics_draw_line(ctx, GPoint(71,56), GPoint(73, 56));
-    graphics_draw_line(ctx, GPoint(71,57), GPoint(73, 57));
-    graphics_draw_line(ctx, GPoint(71,58), GPoint(73, 58));
-  }
 }
 
 static void unload_time_images() {
@@ -320,8 +304,8 @@ static void update_display() {
     strftime(buffer_hh, sizeof("00:00"), "%I", tick_time);
   }
   
-  h1 = 0; //ascii_digit_to_int(buffer_hh[0]);
-  h2 = 0; //ascii_digit_to_int(buffer_hh[1]);
+  h1 = ascii_digit_to_int(buffer_hh[0]);
+  h2 = ascii_digit_to_int(buffer_hh[1]);
   
   // hide leading zero if required
   if (h1 == 0 && hh_strip_zero) h1 = -1;
@@ -329,8 +313,8 @@ static void update_display() {
   // Write the current minuts into the buffer
   strftime(buffer_mm, sizeof("00"), "%M", tick_time);
   
-  m1 = 0; //ascii_digit_to_int(buffer_mm[0]);
-  m2 = 0; //ascii_digit_to_int(buffer_mm[1]);
+  m1 = ascii_digit_to_int(buffer_mm[0]);
+  m2 = ascii_digit_to_int(buffer_mm[1]);
   
   // Write the current date into the buffer
   if (locale != locale_en) {

@@ -1,7 +1,6 @@
 {
     "appKeys": {
         "CONFIG_KEY_HH_IN_BOLD": 0,
-        "CONFIG_KEY_HH_SEP": 4,
         "CONFIG_KEY_HH_STRIP_ZERO": 3,
         "CONFIG_KEY_LOCALE": 2,
         "CONFIG_KEY_MM_IN_BOLD": 1
@@ -144,7 +143,7 @@
         "basalt"
     ],
     "uuid": "0333a278-70f8-4bf1-b811-d64f4dfb6bd3",
-    "versionLabel": "3.4",
+    "versionLabel": "3.3",
     "watchapp": {
         "watchface": true
     }
