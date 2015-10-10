@@ -36,21 +36,22 @@ static int m2 = 0;
 #define CONFIG_KEY_MM_IN_BOLD 1
 #define CONFIG_KEY_LOCALE 2
 #define CONFIG_KEY_HH_STRIP_ZERO 3
+#define CONFIG_KEY_TIME_SEP 4
   
 #define locale_en 0x0
 #define locale_fr 0x1
 #define locale_de 0x2
 #define locale_es 0x3
 
-#define sep_mode_none 0x0
-#define sep_mode_dot 0x1
-#define sep_mode_colon 0x2
+#define time_sep_none 0x0
+#define time_sep_square 0x1
+#define time_sep_round 0x2
 
 static bool hh_in_bold = true;
 static bool mm_in_bold = false;
 static int locale = locale_en;
 static bool hh_strip_zero = false;
-static int sep_mode = sep_mode_dot;
+static int time_sep = time_sep_none;
 
 // days (en, fr, de, es)
 const char *DAYS[4][7] = { 
@@ -101,7 +102,7 @@ static int get_image_min(int idx) {
 }
 
 // widths
-const int WIDTHS[10] = { 35, 15, 33, 30, 33, 32, 33, 33, 33, 33};
+const int WIDTHS[10] = { 31, 11, 29, 26, 29, 28, 29, 29, 29, 29};
 
 // safe width getter
 static int get_width(int idx) {
@@ -119,6 +120,8 @@ static int get_total_width() {
   res += get_width(h2);
   res += get_width(m1);
   res += get_width(m2);
+  
+  res += 20; // padding
   
   return res;
 }
@@ -152,24 +155,29 @@ static void layer_update_callback(Layer *me, GContext *ctx) {
     }    
     
     graphics_context_set_stroke_color(ctx, color);
+    graphics_context_set_fill_color(ctx, color);
   #else
     graphics_context_set_stroke_color(ctx, GColorWhite);
+    graphics_context_set_fill_color(ctx, GColorWhite);
   #endif
  
-  graphics_draw_line(ctx, GPoint(24,88), GPoint(120, 88));
-  graphics_draw_line(ctx, GPoint(24,89), GPoint(120, 89));
-  graphics_draw_line(ctx, GPoint(24,90), GPoint(120, 90));
-  graphics_draw_line(ctx, GPoint(24,91), GPoint(120, 91));
-
-  if (sep_mode == sep_mode_dot) {
-    graphics_context_set_stroke_color(ctx, GColorWhite);
-    graphics_draw_line(ctx, GPoint(71,38), GPoint(73, 38));
-    graphics_draw_line(ctx, GPoint(71,39), GPoint(73, 39));
-    graphics_draw_line(ctx, GPoint(71,40), GPoint(73, 40));
+  graphics_fill_rect(ctx, GRect(24,88, 96,4), 0, GCornersAll);
+  
+  if (time_sep != time_sep_none) {
+    int total_w = get_total_width(); // max is 0000 -> 4*31 + 20 = 144
+    int x_min = ((144 - total_w) / 2) +  1 + get_width(h1) + 4 + get_width(h2) + 3;
     
-    graphics_draw_line(ctx, GPoint(71,56), GPoint(73, 56));
-    graphics_draw_line(ctx, GPoint(71,57), GPoint(73, 57));
-    graphics_draw_line(ctx, GPoint(71,58), GPoint(73, 58));
+    graphics_context_set_stroke_color(ctx, GColorWhite);
+    graphics_context_set_fill_color(ctx, GColorWhite);
+
+    if (time_sep == time_sep_square) {
+      graphics_fill_rect(ctx, GRect(x_min,37, 4,4), 0, GCornersAll);
+      graphics_fill_rect(ctx, GRect(x_min,56, 4,4), 0, GCornersAll);
+    }
+    else if (time_sep == time_sep_round) {
+      graphics_fill_rect(ctx, GRect(x_min,37, 4,4), 1, GCornersAll);
+      graphics_fill_rect(ctx, GRect(x_min,56, 4,4), 1, GCornersAll);
+    }
   }
 }
 
@@ -203,12 +211,18 @@ static void load_time_images() {
   Layer *window_layer = window_get_root_layer(s_main_window);
   
   // center align
-  int total_w = get_total_width() + 4; // max is 0000 -> 4*35 + 4 = 144
+  int total_w = get_total_width(); // max is 0000 -> 4*31 + 20 = 144
   int current_x = (144 - total_w) / 2;
   
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "total_w = %d", total_w);
   
   // Create and add the H1 Bitmap Layer
+  if (time_sep == time_sep_none) {
+    current_x += 2;
+  }
+  else {
+    current_x += 1;
+  }
   s_h1_img_layer = bitmap_layer_create(GRect(current_x, 27, get_width(h1), 43));
   s_h1_bitmap = gbitmap_create_with_resource(get_image_hour(h1));
   bitmap_layer_set_bitmap(s_h1_img_layer, s_h1_bitmap);
@@ -216,6 +230,8 @@ static void load_time_images() {
   
   // Create and add the H2 Bitmap Layer
   current_x += get_width(h1);
+  current_x += 4;
+  
   s_h2_img_layer = bitmap_layer_create(GRect(current_x, 27, get_width(h2), 43));
   s_h2_bitmap = gbitmap_create_with_resource(get_image_hour(h2));
   bitmap_layer_set_bitmap(s_h2_img_layer, s_h2_bitmap);
@@ -223,15 +239,23 @@ static void load_time_images() {
   
   // Create and add the M1 Bitmap Layer
   current_x += get_width(h2);
-  current_x += 4; // separation between hours and minutes
-  s_m1_img_layer = bitmap_layer_create(GRect(current_x, 28, get_width(m1), 42));
+  if (time_sep == time_sep_none) {
+    current_x += 8;
+  }
+  else {
+    current_x += 10;
+  }
+  
+  s_m1_img_layer = bitmap_layer_create(GRect(current_x, 27, get_width(m1), 43));
   s_m1_bitmap = gbitmap_create_with_resource(get_image_min(m1));
   bitmap_layer_set_bitmap(s_m1_img_layer, s_m1_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_m1_img_layer));
   
   // Create and add the M2 Bitmap Layer
   current_x += get_width(m1);
-  s_m2_img_layer = bitmap_layer_create(GRect(current_x, 28, get_width(m2), 42));
+  current_x += 4;
+  
+  s_m2_img_layer = bitmap_layer_create(GRect(current_x, 27, get_width(m2), 43));
   s_m2_bitmap = gbitmap_create_with_resource(get_image_min(m2));
   bitmap_layer_set_bitmap(s_m2_img_layer, s_m2_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_m2_img_layer));
@@ -320,8 +344,8 @@ static void update_display() {
     strftime(buffer_hh, sizeof("00:00"), "%I", tick_time);
   }
   
-  h1 = 0; //ascii_digit_to_int(buffer_hh[0]);
-  h2 = 0; //ascii_digit_to_int(buffer_hh[1]);
+  h1 = ascii_digit_to_int(buffer_hh[0]);
+  h2 = ascii_digit_to_int(buffer_hh[1]);
   
   // hide leading zero if required
   if (h1 == 0 && hh_strip_zero) h1 = -1;
@@ -329,8 +353,8 @@ static void update_display() {
   // Write the current minuts into the buffer
   strftime(buffer_mm, sizeof("00"), "%M", tick_time);
   
-  m1 = 0; //ascii_digit_to_int(buffer_mm[0]);
-  m2 = 0; //ascii_digit_to_int(buffer_mm[1]);
+  m1 = ascii_digit_to_int(buffer_mm[0]);
+  m2 = ascii_digit_to_int(buffer_mm[1]);
   
   // Write the current date into the buffer
   if (locale != locale_en) {
@@ -415,6 +439,12 @@ void read_configuration(void)
   {
     hh_strip_zero = persist_read_bool(CONFIG_KEY_HH_STRIP_ZERO);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "hh_strip_zero = %d", hh_strip_zero);
+  }
+  
+  if (persist_exists(CONFIG_KEY_TIME_SEP))
+  {
+    time_sep = persist_read_int(CONFIG_KEY_TIME_SEP);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "time_sep = %d", time_sep);
   }
 }
 
@@ -510,6 +540,29 @@ void in_received_handler(DictionaryIterator *received, void *context)
     else
     {
       persist_write_bool(CONFIG_KEY_HH_STRIP_ZERO, true);
+    }
+  }
+  
+  Tuple *time_sep_tuple = dict_find(received, CONFIG_KEY_TIME_SEP);
+  if (time_sep_tuple)
+  {
+    app_log(APP_LOG_LEVEL_DEBUG,
+            __FILE__,
+            __LINE__,
+            "time_sep=%s",
+            time_sep_tuple->value->cstring);
+
+    if (strcmp(time_sep_tuple->value->cstring, "square") == 0)
+    {
+      persist_write_int(CONFIG_KEY_TIME_SEP, time_sep_square);
+    }
+    else if (strcmp(time_sep_tuple->value->cstring, "round") == 0)
+    {
+      persist_write_int(CONFIG_KEY_TIME_SEP, time_sep_round);
+    }
+    else
+    {
+      persist_write_int(CONFIG_KEY_TIME_SEP, time_sep_none);
     }
   }
 

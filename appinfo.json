@@ -1,10 +1,10 @@
 {
     "appKeys": {
         "CONFIG_KEY_HH_IN_BOLD": 0,
-		"CONFIG_KEY_HH_SEP": 4,
         "CONFIG_KEY_HH_STRIP_ZERO": 3,
         "CONFIG_KEY_LOCALE": 2,
-        "CONFIG_KEY_MM_IN_BOLD": 1
+        "CONFIG_KEY_MM_IN_BOLD": 1,
+        "CONFIG_KEY_TIME_SEP": 4
     },
     "capabilities": [
         "configurable"
@@ -15,23 +15,8 @@
     "resources": {
         "media": [
             {
-                "file": "fonts/Aero Matics Display Regular.ttf",
-                "name": "AERO_28",
-                "type": "font"
-            },
-            {
-                "file": "images/0.png",
-                "name": "ZERO",
-                "type": "png"
-            },
-            {
-                "file": "images/0B.png",
-                "name": "ZERO_BOLD",
-                "type": "png"
-            },
-            {
-                "file": "images/1.png",
-                "name": "ONE",
+                "file": "images/9.png",
+                "name": "NINE",
                 "type": "png"
             },
             {
@@ -40,43 +25,8 @@
                 "type": "png"
             },
             {
-                "file": "images/2.png",
-                "name": "TWO",
-                "type": "png"
-            },
-            {
-                "file": "images/2B.png",
-                "name": "TWO_BOLD",
-                "type": "png"
-            },
-            {
-                "file": "images/3.png",
-                "name": "THREE",
-                "type": "png"
-            },
-            {
-                "file": "images/3B.png",
-                "name": "THREE_BOLD",
-                "type": "png"
-            },
-            {
-                "file": "images/4.png",
-                "name": "FOUR",
-                "type": "png"
-            },
-            {
-                "file": "images/4B.png",
-                "name": "FOUR_BOLD",
-                "type": "png"
-            },
-            {
-                "file": "images/5.png",
-                "name": "FIVE",
-                "type": "png"
-            },
-            {
-                "file": "images/5B.png",
-                "name": "FIVE_BOLD",
+                "file": "images/warn28.png",
+                "name": "WARN28",
                 "type": "png"
             },
             {
@@ -85,23 +35,19 @@
                 "type": "png"
             },
             {
-                "file": "images/6B.png",
-                "name": "SIX_BOLD",
+                "file": "images/3.png",
+                "name": "THREE",
                 "type": "png"
             },
             {
-                "file": "images/7.png",
-                "name": "SEVEN",
+                "file": "images/2.png",
+                "name": "TWO",
                 "type": "png"
             },
             {
-                "file": "images/7B.png",
-                "name": "SEVEN_BOLD",
-                "type": "png"
-            },
-            {
-                "file": "images/9.png",
-                "name": "NINE",
+                "file": "images/MySimpleWatchMenuV2.png",
+                "menuIcon": true,
+                "name": "MENU",
                 "type": "png"
             },
             {
@@ -115,8 +61,38 @@
                 "type": "png"
             },
             {
-                "file": "images/8.png",
-                "name": "EIGHT",
+                "file": "images/4B.png",
+                "name": "FOUR_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/7.png",
+                "name": "SEVEN",
+                "type": "png"
+            },
+            {
+                "file": "images/5.png",
+                "name": "FIVE",
+                "type": "png"
+            },
+            {
+                "file": "images/2B.png",
+                "name": "TWO_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/3B.png",
+                "name": "THREE_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/6B.png",
+                "name": "SIX_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/5B.png",
+                "name": "FIVE_BOLD",
                 "type": "png"
             },
             {
@@ -125,15 +101,39 @@
                 "type": "png"
             },
             {
-                "file": "images/MySimpleWatchMenuV2.png",
-                "menuIcon": true,
-                "name": "MENU",
+                "file": "images/8.png",
+                "name": "EIGHT",
                 "type": "png"
             },
             {
-                "file": "images/warn28.png",
-                "name": "WARN28",
+                "file": "images/0B.png",
+                "name": "ZERO_BOLD",
                 "type": "png"
+            },
+            {
+                "file": "images/7B.png",
+                "name": "SEVEN_BOLD",
+                "type": "png"
+            },
+            {
+                "file": "images/4.png",
+                "name": "FOUR",
+                "type": "png"
+            },
+            {
+                "file": "images/1.png",
+                "name": "ONE",
+                "type": "png"
+            },
+            {
+                "file": "images/0.png",
+                "name": "ZERO",
+                "type": "png"
+            },
+            {
+                "file": "fonts/Aero Matics Display Regular.ttf",
+                "name": "AERO_28",
+                "type": "font"
             }
         ]
     },
