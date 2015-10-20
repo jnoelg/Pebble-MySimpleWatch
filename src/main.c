@@ -21,6 +21,16 @@ static Layer *s_canvas_layer;
 
 static GFont s_time_font_dte;
 
+#ifdef PBL_PLATFORM_CHALK
+  static int x0 = 18;
+  static int y0 = 6;
+  static int y0d = 4;
+#else
+  static int x0 = 0;
+  static int y0 = 0;
+  static int y0d = 0;
+#endif  
+
 // states
 static bool lastBtStateConnected = false;
 static int chargeState = -1;
@@ -46,6 +56,8 @@ static int m2 = 0;
 #define time_sep_none 0x0
 #define time_sep_square 0x1
 #define time_sep_round 0x2
+#define time_sep_square_bold 0x3
+#define time_sep_round_bold 0x4
 
 static bool hh_in_bold = true;
 static bool mm_in_bold = false;
@@ -161,7 +173,10 @@ static void layer_update_callback(Layer *me, GContext *ctx) {
     graphics_context_set_fill_color(ctx, GColorWhite);
   #endif
  
-  graphics_fill_rect(ctx, GRect(24,88, 96,4), 0, GCornersAll);
+  graphics_fill_rect(ctx, GRect(x0 + 24, y0 + 88, 96, 4), 0, GCornersAll);
+  
+  // debug - force separator
+  //time_sep = time_sep_square_bold;
   
   if (time_sep != time_sep_none) {
     int total_w = get_total_width(); // max is 0000 -> 4*31 + 20 = 144
@@ -171,12 +186,20 @@ static void layer_update_callback(Layer *me, GContext *ctx) {
     graphics_context_set_fill_color(ctx, GColorWhite);
 
     if (time_sep == time_sep_square) {
-      graphics_fill_rect(ctx, GRect(x_min,37, 4,4), 0, GCornersAll);
-      graphics_fill_rect(ctx, GRect(x_min,56, 4,4), 0, GCornersAll);
+      graphics_fill_rect(ctx, GRect(x0 + x_min, y0 + y0d + 37, 4, 4), 0, GCornersAll);
+      graphics_fill_rect(ctx, GRect(x0 + x_min, y0 + y0d + 56, 4, 4), 0, GCornersAll);
     }
     else if (time_sep == time_sep_round) {
-      graphics_fill_rect(ctx, GRect(x_min,37, 4,4), 1, GCornersAll);
-      graphics_fill_rect(ctx, GRect(x_min,56, 4,4), 1, GCornersAll);
+      graphics_fill_rect(ctx, GRect(x0 + x_min, y0 + y0d + 37, 4, 4), 1, GCornersAll);
+      graphics_fill_rect(ctx, GRect(x0 + x_min, y0 + y0d + 56, 4, 4), 1, GCornersAll);
+    }
+    else if (time_sep == time_sep_square_bold) {
+      graphics_fill_rect(ctx, GRect(x0 + x_min - 1, y0 + y0d + 36, 6, 6), 0, GCornersAll);
+      graphics_fill_rect(ctx, GRect(x0 + x_min - 1, y0 + y0d + 55, 6, 6), 0, GCornersAll);
+    }
+    else if (time_sep == time_sep_round_bold) {
+      graphics_fill_rect(ctx, GRect(x0 + x_min - 1, y0 + y0d + 36, 6, 6), 2, GCornersAll);
+      graphics_fill_rect(ctx, GRect(x0 + x_min - 1, y0 + y0d + 55, 6, 6), 2, GCornersAll);
     }
   }
 }
@@ -223,7 +246,7 @@ static void load_time_images() {
   else {
     current_x += 1;
   }
-  s_h1_img_layer = bitmap_layer_create(GRect(current_x, 27, get_width(h1), 43));
+  s_h1_img_layer = bitmap_layer_create(GRect(x0 + current_x, y0 + y0d + 27, get_width(h1), 43));
   s_h1_bitmap = gbitmap_create_with_resource(get_image_hour(h1));
   bitmap_layer_set_bitmap(s_h1_img_layer, s_h1_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_h1_img_layer));
@@ -232,7 +255,7 @@ static void load_time_images() {
   current_x += get_width(h1);
   current_x += 4;
   
-  s_h2_img_layer = bitmap_layer_create(GRect(current_x, 27, get_width(h2), 43));
+  s_h2_img_layer = bitmap_layer_create(GRect(x0 + current_x, y0 + y0d + 27, get_width(h2), 43));
   s_h2_bitmap = gbitmap_create_with_resource(get_image_hour(h2));
   bitmap_layer_set_bitmap(s_h2_img_layer, s_h2_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_h2_img_layer));
@@ -246,7 +269,7 @@ static void load_time_images() {
     current_x += 10;
   }
   
-  s_m1_img_layer = bitmap_layer_create(GRect(current_x, 27, get_width(m1), 43));
+  s_m1_img_layer = bitmap_layer_create(GRect(x0 + current_x, y0 + y0d + 27, get_width(m1), 43));
   s_m1_bitmap = gbitmap_create_with_resource(get_image_min(m1));
   bitmap_layer_set_bitmap(s_m1_img_layer, s_m1_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_m1_img_layer));
@@ -255,7 +278,7 @@ static void load_time_images() {
   current_x += get_width(m1);
   current_x += 4;
   
-  s_m2_img_layer = bitmap_layer_create(GRect(current_x, 27, get_width(m2), 43));
+  s_m2_img_layer = bitmap_layer_create(GRect(x0 + current_x, y0 + y0d + 27, get_width(m2), 43));
   s_m2_bitmap = gbitmap_create_with_resource(get_image_min(m2));
   bitmap_layer_set_bitmap(s_m2_img_layer, s_m2_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_m2_img_layer));
@@ -273,7 +296,7 @@ static void main_window_load(Window *window) {
   load_time_images();
   
   // Create and add the time TextLayer DTE
-  s_time_layer_dte = text_layer_create(GRect(0, 96, 144, 32));
+  s_time_layer_dte = text_layer_create(GRect(x0, y0 + 96, 144, 32));
   text_layer_set_background_color(s_time_layer_dte, GColorBlack);
   text_layer_set_text_color(s_time_layer_dte, GColorWhite);
   text_layer_set_text(s_time_layer_dte, "Ddd 00 Mmm");
@@ -287,7 +310,7 @@ static void main_window_load(Window *window) {
   layer_add_child(window_layer, s_canvas_layer);
   
   // Create and add a Bitmap Layer for BT Signal warning
-  s_warning_img_layer = bitmap_layer_create(GRect(0, 132, 144, 32));
+  s_warning_img_layer = bitmap_layer_create(GRect(x0, y0 + 132, 144, 32));
   s_warning_bitmap = gbitmap_create_with_resource(RESOURCE_ID_WARN28);
   bitmap_layer_set_bitmap(s_warning_img_layer, s_warning_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_warning_img_layer));
@@ -355,6 +378,9 @@ static void update_display() {
   
   m1 = ascii_digit_to_int(buffer_mm[0]);
   m2 = ascii_digit_to_int(buffer_mm[1]);
+  
+  // debug
+  //h1 = h2 = m1 = m2 = 0;
   
   // Write the current date into the buffer
   if (locale != locale_en) {
@@ -559,6 +585,14 @@ void in_received_handler(DictionaryIterator *received, void *context)
     else if (strcmp(time_sep_tuple->value->cstring, "round") == 0)
     {
       persist_write_int(CONFIG_KEY_TIME_SEP, time_sep_round);
+    }
+    else if (strcmp(time_sep_tuple->value->cstring, "squareb") == 0)
+    {
+      persist_write_int(CONFIG_KEY_TIME_SEP, time_sep_square_bold);
+    }
+    else if (strcmp(time_sep_tuple->value->cstring, "roundb") == 0)
+    {
+      persist_write_int(CONFIG_KEY_TIME_SEP, time_sep_round_bold);
     }
     else
     {

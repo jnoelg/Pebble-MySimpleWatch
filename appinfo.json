@@ -141,10 +141,11 @@
     "shortName": "MySimpleWatch",
     "targetPlatforms": [
         "aplite",
-        "basalt"
+        "basalt",
+        "chalk"
     ],
     "uuid": "0333a278-70f8-4bf1-b811-d64f4dfb6bd3",
-    "versionLabel": "3.4",
+    "versionLabel": "3.5",
     "watchapp": {
         "watchface": true
     }
