@@ -10,125 +10,126 @@
         "configurable"
     ],
     "companyName": "contact@jn-goumain.ca",
+    "enableMultiJS": true,
     "longName": "MySimpleWatch",
     "projectType": "native",
     "resources": {
         "media": [
             {
+                "file": "images/MySimpleWatchMenuV2.png",
+                "menuIcon": true,
+                "name": "MENU",
+                "type": "bitmap"
+            },
+            {
                 "file": "images/9.png",
                 "name": "NINE",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/1B.png",
                 "name": "ONE_BOLD",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/warn28.png",
                 "name": "WARN28",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/6.png",
                 "name": "SIX",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/3.png",
                 "name": "THREE",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/2.png",
                 "name": "TWO",
-                "type": "png"
-            },
-            {
-                "file": "images/MySimpleWatchMenuV2.png",
-                "menuIcon": true,
-                "name": "MENU",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/9B.png",
                 "name": "NINE_BOLD",
-                "type": "png"
-            },
-            {
-                "file": "images/blank.png",
-                "name": "BLANK",
-                "type": "png"
-            },
-            {
-                "file": "images/4B.png",
-                "name": "FOUR_BOLD",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/7.png",
                 "name": "SEVEN",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/5.png",
                 "name": "FIVE",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/2B.png",
                 "name": "TWO_BOLD",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/3B.png",
                 "name": "THREE_BOLD",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/6B.png",
                 "name": "SIX_BOLD",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/5B.png",
                 "name": "FIVE_BOLD",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/8B.png",
                 "name": "EIGHT_BOLD",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/8.png",
                 "name": "EIGHT",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/0B.png",
                 "name": "ZERO_BOLD",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/7B.png",
                 "name": "SEVEN_BOLD",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/4.png",
                 "name": "FOUR",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/1.png",
                 "name": "ONE",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/0.png",
                 "name": "ZERO",
-                "type": "png"
+                "type": "bitmap"
+            },
+            {
+                "file": "images/blank.png",
+                "name": "BLANK",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/4B.png",
+                "name": "FOUR_BOLD",
+                "type": "bitmap"
             },
             {
                 "file": "fonts/Aero Matics Display Regular.ttf",
@@ -145,7 +146,7 @@
         "chalk"
     ],
     "uuid": "0333a278-70f8-4bf1-b811-d64f4dfb6bd3",
-    "versionLabel": "3.5",
+    "versionLabel": "3.6",
     "watchapp": {
         "watchface": true
     }

@@ -24,7 +24,7 @@ Pebble.addEventListener("showConfiguration", function() {
     console.log("defaults options: " + JSON.stringify(options));
   }
   
-  var uri = 'http://jnoelg.github.io/MySimpleWatch/configurable-3.5.html';
+  var uri = 'http://jnoelg.github.io/MySimpleWatch/configurable-3.6.html';
   uri = uri+ '?' + encodeURIComponent(JSON.stringify(options));
   
   console.log("showing configuration");

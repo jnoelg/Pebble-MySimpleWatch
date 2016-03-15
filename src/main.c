@@ -52,6 +52,7 @@ static int m2 = 0;
 #define locale_fr 0x1
 #define locale_de 0x2
 #define locale_es 0x3
+#define locale_it 0x4
 
 #define time_sep_none 0x0
 #define time_sep_square 0x1
@@ -65,20 +66,22 @@ static int locale = locale_en;
 static bool hh_strip_zero = false;
 static int time_sep = time_sep_none;
 
-// days (en, fr, de, es)
-const char *DAYS[4][7] = { 
+// days (en, fr, de, es, it)
+const char *DAYS[5][7] = { 
   {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"},
   {"Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"},   
   {"Son", "Mon", "Die", "Mit", "Don", "Fre", "Sam"},
-  {"Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sab"}
+  {"Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sab"}, 
+  {"Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"}
 };
 
-// months (en, fr, de, es)
-const char *MONTHS[4][12] = { 
+// months (en, fr, de, es, it)
+const char *MONTHS[5][12] = { 
   {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
   {"Jan", "Fev", "Mar", "Avr", "Mai", "Jui", "Jul", "Aou", "Sep", "Oct", "Nov", "Dec"},   
   {"Jan", "Feb", "Mrz", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"},
-  {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"}
+  {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"},
+  {"Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"}
 };
 
 // in Spanish, the days of the week and the months of the year are not capitalized when spelled out or abbreviated
@@ -442,7 +445,7 @@ void read_configuration(void)
   if (persist_exists(CONFIG_KEY_LOCALE))
   {
     locale = persist_read_int(CONFIG_KEY_LOCALE);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "using config locale (0=en, 1=fr, 2=de, 3=es) = %d", locale);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "using config locale (0=en, 1=fr, 2=de, 3=es, 4=it) = %d", locale);
   }
   else {
     // use default / system locale
@@ -454,6 +457,8 @@ void read_configuration(void)
       locale = locale_de;
     } else if (strcmp(sys_locale, "es_ES") == 0) {
       locale = locale_es;
+    } else if (strcmp(sys_locale, "it_IT") == 0) {
+      locale = locale_it;
     } else {
       locale = locale_en; // default
     }
@@ -543,6 +548,10 @@ void in_received_handler(DictionaryIterator *received, void *context)
     else if (strcmp(locale_tuple->value->cstring, "es") == 0)
     {
       persist_write_int(CONFIG_KEY_LOCALE, locale_es);
+    }
+    else if (strcmp(locale_tuple->value->cstring, "it") == 0)
+    {
+      persist_write_int(CONFIG_KEY_LOCALE, locale_it);
     }
     else
     {
