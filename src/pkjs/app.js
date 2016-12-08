@@ -9,7 +9,7 @@ function appMessageNack(e) {
 }
 
 Pebble.addEventListener("ready", function() {
-  console.log("ready called!");
+  console.log("PebbleKit JS ready!");
   initialized = true;
 });
 
@@ -24,7 +24,7 @@ Pebble.addEventListener("showConfiguration", function() {
     console.log("defaults options: " + JSON.stringify(options));
   }
   
-  var uri = 'http://jnoelg.github.io/MySimpleWatch/configurable-3.6.html';
+  var uri = 'http://jnoelg.github.io/MySimpleWatch/configurable-3.8.html';
   uri = uri+ '?' + encodeURIComponent(JSON.stringify(options));
   
   console.log("showing configuration");
@@ -55,13 +55,17 @@ Pebble.addEventListener("webviewclosed", function(e) {
     var time_sep = options["time-sep"];
     console.log("time-sep: " + time_sep);
     
+    var repeat_vib = options["repeat-vib"];
+    console.log("repeat-vib: " + repeat_vib);
+    
     Pebble.sendAppMessage(
       {
-        "CONFIG_KEY_HH_IN_BOLD":hh_in_bold,
-        "CONFIG_KEY_MM_IN_BOLD":mm_in_bold, 
-        "CONFIG_KEY_LOCALE":locale,
-        "CONFIG_KEY_HH_STRIP_ZERO":hh_strip_zero, 
-        "CONFIG_KEY_TIME_SEP":time_sep
+        "HH_IN_BOLD":hh_in_bold,
+        "MM_IN_BOLD":mm_in_bold, 
+        "LOCALE":locale,
+        "HH_STRIP_ZERO":hh_strip_zero, 
+        "TIME_SEP":time_sep, 
+        "REPEAT_VIB":repeat_vib
       }, 
       appMessageAck, 
       appMessageNack

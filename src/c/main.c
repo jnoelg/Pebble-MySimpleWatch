@@ -41,13 +41,7 @@ static int h2 = 0;
 static int m1 = 0;
 static int m2 = 0;
 
-// config keys and values 
-#define CONFIG_KEY_HH_IN_BOLD 0
-#define CONFIG_KEY_MM_IN_BOLD 1
-#define CONFIG_KEY_LOCALE 2
-#define CONFIG_KEY_HH_STRIP_ZERO 3
-#define CONFIG_KEY_TIME_SEP 4
-  
+// config values 
 #define locale_en 0x0
 #define locale_fr 0x1
 #define locale_de 0x2
@@ -65,6 +59,7 @@ static bool mm_in_bold = false;
 static int locale = locale_en;
 static bool hh_strip_zero = false;
 static int time_sep = time_sep_none;
+static bool repeat_vib = false;
 
 // days (en, fr, de, es, it)
 const char *DAYS[5][7] = { 
@@ -404,7 +399,7 @@ static void update_display() {
   // Display values in TextLayers
   text_layer_set_text(s_time_layer_dte, buffer_dte);
   
-  if (bluetooth_connection_service_peek()) {
+  if (connection_service_peek_pebble_app_connection()) {
     // phone is connected
     layer_set_hidden(bitmap_layer_get_layer(s_warning_img_layer), true); 
     //layer_set_hidden(text_layer_get_layer(s_time_layer_dte), false); 
@@ -414,8 +409,8 @@ static void update_display() {
     //layer_set_hidden(text_layer_get_layer(s_time_layer_dte), true); 
     layer_set_hidden(bitmap_layer_get_layer(s_warning_img_layer), false); 
     
-    // if we just lost the connection, vibe twice
-    if (lastBtStateConnected) {
+    // if we just lost the connection or if we want to have repeated vibrations, vibe twice
+    if (lastBtStateConnected || repeat_vib) {
       lastBtStateConnected = false;
       vibes_double_pulse();
     }
@@ -430,21 +425,21 @@ void read_configuration(void)
 {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "read_configuration");
   
-  if (persist_exists(CONFIG_KEY_HH_IN_BOLD))
+  if (persist_exists(MESSAGE_KEY_HH_IN_BOLD))
   {
-    hh_in_bold = persist_read_bool(CONFIG_KEY_HH_IN_BOLD);
+    hh_in_bold = persist_read_bool(MESSAGE_KEY_HH_IN_BOLD);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "hh_in_bold = %d", hh_in_bold);
   }
   
-  if (persist_exists(CONFIG_KEY_MM_IN_BOLD))
+  if (persist_exists(MESSAGE_KEY_MM_IN_BOLD))
   {
-    mm_in_bold = persist_read_bool(CONFIG_KEY_MM_IN_BOLD);
+    mm_in_bold = persist_read_bool(MESSAGE_KEY_MM_IN_BOLD);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "mm_in_bold = %d", mm_in_bold);
   }
   
-  if (persist_exists(CONFIG_KEY_LOCALE))
+  if (persist_exists(MESSAGE_KEY_LOCALE))
   {
-    locale = persist_read_int(CONFIG_KEY_LOCALE);
+    locale = persist_read_int(MESSAGE_KEY_LOCALE);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "using config locale (0=en, 1=fr, 2=de, 3=es, 4=it) = %d", locale);
   }
   else {
@@ -466,16 +461,22 @@ void read_configuration(void)
     APP_LOG(APP_LOG_LEVEL_DEBUG, "using default locale = %s -> %d", sys_locale, locale);
   }
   
-  if (persist_exists(CONFIG_KEY_HH_STRIP_ZERO))
+  if (persist_exists(MESSAGE_KEY_HH_STRIP_ZERO))
   {
-    hh_strip_zero = persist_read_bool(CONFIG_KEY_HH_STRIP_ZERO);
+    hh_strip_zero = persist_read_bool(MESSAGE_KEY_HH_STRIP_ZERO);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "hh_strip_zero = %d", hh_strip_zero);
   }
   
-  if (persist_exists(CONFIG_KEY_TIME_SEP))
+  if (persist_exists(MESSAGE_KEY_TIME_SEP))
   {
-    time_sep = persist_read_int(CONFIG_KEY_TIME_SEP);
+    time_sep = persist_read_int(MESSAGE_KEY_TIME_SEP);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "time_sep = %d", time_sep);
+  }
+  
+  if (persist_exists(MESSAGE_KEY_REPEAT_VIB))
+  {
+    repeat_vib = persist_read_bool(MESSAGE_KEY_REPEAT_VIB);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "repeat_vib = %d", repeat_vib);
   }
 }
 
@@ -483,7 +484,7 @@ void in_received_handler(DictionaryIterator *received, void *context)
 {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "in_received_handler");
   
-  Tuple *hh_in_bold_tuple = dict_find(received, CONFIG_KEY_HH_IN_BOLD);
+  Tuple *hh_in_bold_tuple = dict_find(received, MESSAGE_KEY_HH_IN_BOLD);
   if (hh_in_bold_tuple)
   {
     app_log(APP_LOG_LEVEL_DEBUG,
@@ -494,15 +495,15 @@ void in_received_handler(DictionaryIterator *received, void *context)
 
     if (strcmp(hh_in_bold_tuple->value->cstring, "0") == 0)
     {
-      persist_write_bool(CONFIG_KEY_HH_IN_BOLD, false);
+      persist_write_bool(MESSAGE_KEY_HH_IN_BOLD, false);
     }
     else
     {
-      persist_write_bool(CONFIG_KEY_HH_IN_BOLD, true);
+      persist_write_bool(MESSAGE_KEY_HH_IN_BOLD, true);
     }
   }
 
-  Tuple *mm_in_bold_tuple = dict_find(received, CONFIG_KEY_MM_IN_BOLD);
+  Tuple *mm_in_bold_tuple = dict_find(received, MESSAGE_KEY_MM_IN_BOLD);
   if (mm_in_bold_tuple)
   {
     app_log(APP_LOG_LEVEL_DEBUG,
@@ -513,15 +514,15 @@ void in_received_handler(DictionaryIterator *received, void *context)
 
     if (strcmp(mm_in_bold_tuple->value->cstring, "1") == 0)
     {
-      persist_write_bool(CONFIG_KEY_MM_IN_BOLD, true);
+      persist_write_bool(MESSAGE_KEY_MM_IN_BOLD, true);
     }
     else
     {
-      persist_write_bool(CONFIG_KEY_MM_IN_BOLD, false);
+      persist_write_bool(MESSAGE_KEY_MM_IN_BOLD, false);
     }
   }
   
-  Tuple *locale_tuple = dict_find(received, CONFIG_KEY_LOCALE);
+  Tuple *locale_tuple = dict_find(received, MESSAGE_KEY_LOCALE);
   if (locale_tuple)
   {
     app_log(APP_LOG_LEVEL_DEBUG,
@@ -532,34 +533,34 @@ void in_received_handler(DictionaryIterator *received, void *context)
 
     if (strcmp(locale_tuple->value->cstring, "default") == 0)
     {
-      if (persist_exists(CONFIG_KEY_LOCALE)) 
+      if (persist_exists(MESSAGE_KEY_LOCALE)) 
       {
-        persist_delete(CONFIG_KEY_LOCALE);
+        persist_delete(MESSAGE_KEY_LOCALE);
       }
     }
     else if (strcmp(locale_tuple->value->cstring, "fr") == 0)
     {
-      persist_write_int(CONFIG_KEY_LOCALE, locale_fr);
+      persist_write_int(MESSAGE_KEY_LOCALE, locale_fr);
     }
     else if (strcmp(locale_tuple->value->cstring, "de") == 0)
     {
-      persist_write_int(CONFIG_KEY_LOCALE, locale_de);
+      persist_write_int(MESSAGE_KEY_LOCALE, locale_de);
     }
     else if (strcmp(locale_tuple->value->cstring, "es") == 0)
     {
-      persist_write_int(CONFIG_KEY_LOCALE, locale_es);
+      persist_write_int(MESSAGE_KEY_LOCALE, locale_es);
     }
     else if (strcmp(locale_tuple->value->cstring, "it") == 0)
     {
-      persist_write_int(CONFIG_KEY_LOCALE, locale_it);
+      persist_write_int(MESSAGE_KEY_LOCALE, locale_it);
     }
     else
     {
-      persist_write_int(CONFIG_KEY_LOCALE, locale_en);
+      persist_write_int(MESSAGE_KEY_LOCALE, locale_en);
     }
   }
   
-  Tuple *hh_strip_zero_tuple = dict_find(received, CONFIG_KEY_HH_STRIP_ZERO);
+  Tuple *hh_strip_zero_tuple = dict_find(received, MESSAGE_KEY_HH_STRIP_ZERO);
   if (hh_strip_zero_tuple)
   {
     app_log(APP_LOG_LEVEL_DEBUG,
@@ -570,15 +571,15 @@ void in_received_handler(DictionaryIterator *received, void *context)
 
     if (strcmp(hh_strip_zero_tuple->value->cstring, "0") == 0)
     {
-      persist_write_bool(CONFIG_KEY_HH_STRIP_ZERO, false);
+      persist_write_bool(MESSAGE_KEY_HH_STRIP_ZERO, false);
     }
     else
     {
-      persist_write_bool(CONFIG_KEY_HH_STRIP_ZERO, true);
+      persist_write_bool(MESSAGE_KEY_HH_STRIP_ZERO, true);
     }
   }
   
-  Tuple *time_sep_tuple = dict_find(received, CONFIG_KEY_TIME_SEP);
+  Tuple *time_sep_tuple = dict_find(received, MESSAGE_KEY_TIME_SEP);
   if (time_sep_tuple)
   {
     app_log(APP_LOG_LEVEL_DEBUG,
@@ -589,25 +590,44 @@ void in_received_handler(DictionaryIterator *received, void *context)
 
     if (strcmp(time_sep_tuple->value->cstring, "square") == 0)
     {
-      persist_write_int(CONFIG_KEY_TIME_SEP, time_sep_square);
+      persist_write_int(MESSAGE_KEY_TIME_SEP, time_sep_square);
     }
     else if (strcmp(time_sep_tuple->value->cstring, "round") == 0)
     {
-      persist_write_int(CONFIG_KEY_TIME_SEP, time_sep_round);
+      persist_write_int(MESSAGE_KEY_TIME_SEP, time_sep_round);
     }
     else if (strcmp(time_sep_tuple->value->cstring, "squareb") == 0)
     {
-      persist_write_int(CONFIG_KEY_TIME_SEP, time_sep_square_bold);
+      persist_write_int(MESSAGE_KEY_TIME_SEP, time_sep_square_bold);
     }
     else if (strcmp(time_sep_tuple->value->cstring, "roundb") == 0)
     {
-      persist_write_int(CONFIG_KEY_TIME_SEP, time_sep_round_bold);
+      persist_write_int(MESSAGE_KEY_TIME_SEP, time_sep_round_bold);
     }
     else
     {
-      persist_write_int(CONFIG_KEY_TIME_SEP, time_sep_none);
+      persist_write_int(MESSAGE_KEY_TIME_SEP, time_sep_none);
     }
   }
+  
+  Tuple *repeat_vib_tuple = dict_find(received, MESSAGE_KEY_REPEAT_VIB);
+  if (repeat_vib_tuple)
+  {
+    app_log(APP_LOG_LEVEL_DEBUG,
+            __FILE__,
+            __LINE__,
+            "repeat_vib=%s",
+            repeat_vib_tuple->value->cstring);
+
+    if (strcmp(repeat_vib_tuple->value->cstring, "1") == 0)
+    {
+      persist_write_bool(MESSAGE_KEY_REPEAT_VIB, true);
+    }
+    else
+    {
+      persist_write_bool(MESSAGE_KEY_REPEAT_VIB, false);
+    }
+  }  
 
   read_configuration();
   update_display();

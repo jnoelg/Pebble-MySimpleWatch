@@ -9,13 +9,14 @@
         ],
         "displayName": "MySimpleWatch",
         "enableMultiJS": true,
-        "messageKeys": {
-            "CONFIG_KEY_HH_IN_BOLD": 0,
-            "CONFIG_KEY_HH_STRIP_ZERO": 3,
-            "CONFIG_KEY_LOCALE": 2,
-            "CONFIG_KEY_MM_IN_BOLD": 1,
-            "CONFIG_KEY_TIME_SEP": 4
-        },
+        "messageKeys": [
+            "HH_IN_BOLD",
+            "MM_IN_BOLD",
+            "LOCALE",
+            "HH_STRIP_ZERO",
+            "TIME_SEP",
+            "REPEAT_VIB"
+        ],
         "projectType": "native",
         "resources": {
             "media": [
@@ -154,5 +155,5 @@
             "watchface": true
         }
     },
-    "version": "3.7.0"
+    "version": "3.8.0"
 }
